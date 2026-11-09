@@ -1,5 +1,4 @@
 import { createSlice, createSelector } from '@reduxjs/toolkit'
-import { getProduct } from '../data/products'
 
 const cartSlice = createSlice({
   name: 'cart',
@@ -26,15 +25,22 @@ const cartSlice = createSlice({
 export const { addItem, removeItem, setQty, clearCart } = cartSlice.actions
 
 const selectItemsMap = (state) => state.cart.items
+const selectProductList = (state) => state.products.items
 
 export const selectCartCount = createSelector([selectItemsMap], (items) =>
   Object.values(items).reduce((sum, qty) => sum + qty, 0)
 )
 
-export const selectCartItems = createSelector([selectItemsMap], (items) =>
-  Object.entries(items)
-    .map(([id, qty]) => ({ product: getProduct(id), qty }))
-    .filter((item) => item.product)
+// Cart entries resolve against the loaded product list so the IDs coming from
+// MongoDB work exactly like the bundled sample IDs.
+export const selectCartItems = createSelector(
+  [selectItemsMap, selectProductList],
+  (items, products) => {
+    const byId = new Map(products.map((p) => [p.id, p]))
+    return Object.entries(items)
+      .map(([id, qty]) => ({ product: byId.get(id), qty }))
+      .filter((item) => item.product)
+  }
 )
 
 export const selectSubtotal = createSelector([selectCartItems], (items) =>

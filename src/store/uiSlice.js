@@ -13,6 +13,8 @@ const uiSlice = createSlice({
     category: 'all',
     sort: 'featured',
     cartOpen: false,
+    authOpen: false,
+    authMode: 'login',
     theme: getInitialTheme(),
   },
   reducers: {
@@ -34,6 +36,16 @@ const uiSlice = createSlice({
     toggleTheme(state) {
       state.theme = state.theme === 'dark' ? 'light' : 'dark'
     },
+    openAuth(state, action) {
+      state.authMode = action.payload === 'register' ? 'register' : 'login'
+      state.authOpen = true
+    },
+    closeAuth(state) {
+      state.authOpen = false
+    },
+    setAuthMode(state, action) {
+      state.authMode = action.payload === 'register' ? 'register' : 'login'
+    },
   },
 })
 
@@ -44,6 +56,9 @@ export const {
   openCart,
   closeCart,
   toggleTheme,
+  openAuth,
+  closeAuth,
+  setAuthMode,
 } = uiSlice.actions
 
 export default uiSlice.reducer

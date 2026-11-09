@@ -71,7 +71,8 @@ Errors are consistent JSON: `{ "message": "..." }` with status codes
    bcrypt before being stored.
 2. On login, the server verifies the credentials against the stored hash and, on
    success, signs a JSON Web Token (HS256) containing the user id with the
-   `JWT_SECRET` environment variable and returns it as `{ "token": "..." }`.
+   `JWT_SECRET` environment variable. It returns the token and the public user
+   data: `{ "token": "...", "user": { "id", "name", "email" } }`.
 3. The client sends the token with protected requests in the header:
    `Authorization: Bearer <JWT_TOKEN>`.
 4. The `requireAuth` middleware extracts the token, verifies its signature and
@@ -104,6 +105,7 @@ cp .env.example .env   # then edit the values
 PORT=3000
 MONGO_URI=mongodb://127.0.0.1:27017/webmarket
 JWT_SECRET=replace_with_a_long_random_local_secret
+CLIENT_ORIGIN=http://localhost:5173
 ```
 
 > The `.env` file is gitignored. Never commit real credentials or secrets.
@@ -113,10 +115,22 @@ JWT_SECRET=replace_with_a_long_random_local_secret
 ```bash
 cd backend
 npm install
-npm run seed     # optional: insert 16 sample products (16 seed products from TD-TP 2)
+npm run seed     # optional: insert 16 sample products from TD-TP 2
 npm start        # API on http://localhost:3000
 # or: npm run dev (auto-reload with --watch)
 ```
+
+## Optional: connecting the React frontend (TD-TP 2)
+
+The frontend in the repository root consumes this API (login/register and the
+product list). It is optional for this lab.
+
+1. Copy the root `.env.example` to `.env` if you need a non-default API URL
+   (`VITE_API_URL`, default `http://localhost:3000/api`).
+2. Start MongoDB and this API first, then in another terminal:
+   `npm install && npm run dev` from the repository root.
+3. If the API is unreachable, the storefront keeps working with bundled sample
+   products and shows a "Showing sample data" banner with a retry button.
 
 ## API testing checklist (Postman / Thunder Client)
 

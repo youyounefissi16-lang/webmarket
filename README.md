@@ -1,16 +1,63 @@
-# React + Vite
+# WebMarket
 
-This template provides a minimal setup to get React working in Vite with HMR and some Oxlint rules.
+Full-stack e-commerce demo: a React + Redux storefront (TD-TP 2) and a Node.js /
+Express / MongoDB REST API (TD-TP 3).
 
-Currently, two official plugins are available:
+## Structure
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+```
+.
+├── src/        React 19 + Redux Toolkit storefront (Vite)
+├── backend/    Express REST API (products, auth with JWT, rate limiting)
+└── public/
+```
 
-## React Compiler
+- **Storefront:** product catalog, search, category filters, sorting, cart drawer,
+  dark mode, and a login/register dialog backed by the API.
+- **Backend:** product CRUD in MongoDB, user registration/login with bcrypt and JWT,
+  protected write endpoints, and rate limiting. See `backend/README.md` for the full
+  API documentation.
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+## Run locally
 
-## Expanding the Oxlint configuration
+### 1. Backend (API on port 3000)
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and Oxlint's TypeScript related rules in your project.
+```bash
+cd backend
+npm install
+cp .env.example .env     # adjust if needed
+npm run seed             # optional sample products
+npm start
+```
+
+Requires MongoDB. With a local install, start the **MongoDB** service first
+(elevated PowerShell: `net start MongoDB`). Alternatively put your Atlas connection
+string in `backend/.env`.
+
+### 2. Frontend (Vite dev server on port 5173)
+
+```bash
+npm install
+npm run dev
+```
+
+The frontend calls `http://localhost:3000/api` by default. Override it with
+`VITE_API_URL` in a root `.env` file (see `.env.example`). If the API is down, the
+storefront falls back to bundled sample products and shows a banner.
+
+## Scripts
+
+| Command | Purpose |
+|---|---|
+| `npm run dev` | Start the Vite dev server |
+| `npm run build` | Production build into `dist/` |
+| `npm run preview` | Preview the production build |
+| `npm run lint` | Lint the frontend with oxlint |
+| `npm run seed --prefix backend` | Seed sample products |
+| `npm start --prefix backend` | Start the API |
+
+## Notes
+
+- Passwords are stored as bcrypt hashes; JWTs are signed with `JWT_SECRET`.
+- `backend/.env` and the root `.env` are gitignored — never commit real secrets.
+- Prices are stored in USD and displayed in DZD on the storefront.

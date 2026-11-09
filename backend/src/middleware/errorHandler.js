@@ -4,7 +4,7 @@ export function notFound(req, res) {
   res.status(404).json({ message: `Not found: ${req.method} ${req.originalUrl}` })
 }
 
-export function errorHandler(err, req, res, next) {
+export function errorHandler(err, req, res, _next) {
   // Mongoose validation errors — invalid input (e.g. missing required fields)
   if (err.name === 'ValidationError') {
     const message = Object.values(err.errors)

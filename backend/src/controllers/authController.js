@@ -53,7 +53,10 @@ export async function login(req, res, next) {
       return res.status(401).json({ message: 'Invalid email or password' })
     }
 
-    res.status(200).json({ token: signToken(user._id) })
+    res.status(200).json({
+      token: signToken(user._id),
+      user: { id: user._id, name: user.name, email: user.email },
+    })
   } catch (err) {
     next(err)
   }

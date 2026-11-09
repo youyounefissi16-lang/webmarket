@@ -2,6 +2,7 @@ import { Moon, Search, ShoppingCart, Store, Sun } from 'lucide-react'
 import { useDispatch, useSelector } from 'react-redux'
 import { openCart, setSearch, toggleTheme } from '../store/uiSlice'
 import { selectCartCount } from '../store/cartSlice'
+import UserMenu from './UserMenu'
 
 export default function Header() {
   const dispatch = useDispatch()
@@ -31,6 +32,8 @@ export default function Header() {
             aria-label="Search products"
           />
         </div>
+
+        <UserMenu />
 
         <button
           type="button"

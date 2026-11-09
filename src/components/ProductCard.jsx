@@ -11,6 +11,7 @@ export default function ProductCard({ product }) {
   const discount = product.originalPrice
     ? Math.round((1 - product.price / product.originalPrice) * 100)
     : 0
+  const outOfStock = product.stock === 0
 
   return (
     <article className="card">
@@ -33,20 +34,28 @@ export default function ProductCard({ product }) {
         >
           <Heart size={18} fill={wished ? 'currentColor' : 'none'} />
         </button>
-        <span className="card-emoji" aria-hidden="true">
-          {product.emoji}
-        </span>
+        {product.imageUrl ? (
+          <img className="card-img" src={product.imageUrl} alt={product.name} loading="lazy" />
+        ) : (
+          <span className="card-emoji" aria-hidden="true">
+            {product.emoji}
+          </span>
+        )}
       </div>
 
       <div className="card-body">
         <span className="card-category">{product.category}</span>
         <h3 className="card-title">{product.name}</h3>
         <p className="card-tagline">{product.tagline}</p>
-        <div className="card-rating">
-          <Star size={14} fill="currentColor" />
-          <strong>{product.rating.toFixed(1)}</strong>
-          <span className="muted">({product.reviews.toLocaleString()})</span>
-        </div>
+        {product.rating != null && (
+          <div className="card-rating">
+            <Star size={14} fill="currentColor" />
+            <strong>{product.rating.toFixed(1)}</strong>
+            {product.reviews != null && (
+              <span className="muted">({product.reviews.toLocaleString()})</span>
+            )}
+          </div>
+        )}
         <div className="card-footer">
           <div className="price">
             <strong>{formatPrice(product.price)}</strong>
@@ -57,8 +66,9 @@ export default function ProductCard({ product }) {
             type="button"
             className="add-btn"
             onClick={() => dispatch(addItem(product.id))}
+            disabled={outOfStock}
           >
-            <ShoppingCart size={15} /> Add
+            <ShoppingCart size={15} /> {outOfStock ? 'Sold out' : 'Add'}
           </button>
         </div>
       </div>
